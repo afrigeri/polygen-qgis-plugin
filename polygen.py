@@ -25,6 +25,8 @@ from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 
+from qgis.core import QgsProject
+
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -190,6 +192,15 @@ class PolyFromPointsLines:
         if self.first_start == True:
             self.first_start = False
             self.dlg = PolyFromPointsLinesDialog()
+
+        # Fetch the currently loaded layers
+        layers = QgsProject.instance().layerTreeRoot().children()
+        # Clear the contents of the comboBox from previous runs
+        self.dlg.comboBox.clear()
+        self.dlg.comboBox_2.clear()
+        # Populate the comboBox with names of all the loaded layers
+        self.dlg.comboBox.addItems([layer.name() for layer in layers])
+        self.dlg.comboBox_2.addItems([layer.name() for layer in layers])
 
         # show the dialog
         self.dlg.show()
